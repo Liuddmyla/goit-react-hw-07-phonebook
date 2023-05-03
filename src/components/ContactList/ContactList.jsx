@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from '../../redux/operations';
+import { deleteContact, fetchContacts } from '../../redux/operations';
 import css from './ContactList.module.css';
 import { selectContacts, selectFilter } from 'redux/selectors';
+import { useEffect } from 'react';
 
 
 const ContactList = ({ children }) => {
@@ -15,10 +16,11 @@ const ContactList = ({ children }) => {
   const dispatch = useDispatch();
   const contactsList = filtersContacts(contacts, filter);
 
-  const deleteItem = id => {
-    dispatch(deleteContact(id));
-  };
+   useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
+  
   return (
     <>
       <div >
@@ -28,7 +30,7 @@ const ContactList = ({ children }) => {
           {contactsList.map(({ name, number, id }) => (
             <li key={id} className={css.item}>
               <p>{name}: {number} </p>
-              <button type="button" onClick={() => deleteItem(id)} className={css['btn-delete']}>
+              <button type="button" onClick={() => dispatch(deleteContact(id))} className={css['btn-delete']}>
                 Delete
               </button>
             </li>
